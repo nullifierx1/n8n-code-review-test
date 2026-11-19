@@ -5,6 +5,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from urllib.parse import parse_qs, urlparse
 
+from config import HERO_BUILD_LABELS
+
 
 BUILDS = {
     "axe": {
@@ -26,7 +28,10 @@ class BuildHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802 - required by BaseHTTPRequestHandler
         request = urlparse(self.path)
         if request.path == "/health":
-            self._send_json(HTTPStatus.OK, {"status": "ok"})
+            self._send_json(
+                HTTPStatus.OK,
+                {"status": "ok", "service": "dota-hero-builds"},
+            )
         elif request.path == "/build":
             hero = parse_qs(request.query).get("hero", ["axe"])[0].lower()
             build = BUILDS.get(hero)
@@ -35,7 +40,10 @@ class BuildHandler(BaseHTTPRequestHandler):
             else:
                 self._send_json(
                     HTTPStatus.NOT_FOUND,
-                    {"error": "Hero build not found", "available_heroes": sorted(BUILDS)},
+                    {
+                        "error": "Hero build not found",
+                        "available_heroes": sorted(HERO_BUILD_CATALOG),
+                    },
                 )
         else:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found"})
@@ -53,7 +61,7 @@ class BuildHandler(BaseHTTPRequestHandler):
 
 
 def run(host="127.0.0.1", port=8000):
-    server = ThreadingHTTPServer((host, port), TipHandler)
+    server = ThreadingHTTPServer((host, port), ReviewBuildHandler)
     print(f"Dota Hero Builds service is running at http://{host}:{port}")
     server.serve_forever()
 
