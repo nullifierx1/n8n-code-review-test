@@ -13,3 +13,4 @@ python app.py
 
 - `GET /health` — статус сервиса.
 - `GET /build` — стартовый билд для Axe на оффлейне.
+- `GET /build?hero=crystal-maiden` — билд для Crystal Maiden.
