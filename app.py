@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlpars
 
 
 BUILDS = {
