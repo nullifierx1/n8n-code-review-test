@@ -1,25 +1,11 @@
-"""A small HTTP service with a starter build for the Dota 2 hero Axe."""
+"""A small HTTP service that returns static Dota 2 hero builds."""
 
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from urllib.parse import parse_qs, urlparse
 
-
-BUILDS = {
-    "axe": {
-        "hero": "Axe",
-        "role": "Offlane",
-        "items": ["Phase Boots", "Blink Dagger", "Blade Mail", "Black King Bar"],
-        "skills": ["Berserker's Call", "Battle Hunger", "Counter Helix", "Culling Blade"],
-    },
-    "crystal-maiden": {
-        "hero": "Crystal Maiden",
-        "role": "Support",
-        "items": ["Arcane Boots", "Glimmer Cape", "Force Staff", "Black King Bar"],
-        "skills": ["Crystal Nova", "Frostbite", "Arcane Aura", "Freezing Field"],
-    },
-}
+from config import BUILDS, HEROES_BY_ATTRIBUTE
 
 
 class BuildHandler(BaseHTTPRequestHandler):
@@ -37,6 +23,20 @@ class BuildHandler(BaseHTTPRequestHandler):
                     HTTPStatus.NOT_FOUND,
                     {"error": "Hero build not found", "available_heroes": sorted(BUILDS)},
                 )
+        elif request.path == "/heroes":
+            attribute = parse_qs(request.query).get("attribute", [None])[0]
+            if attribute is None:
+                self._send_json(HTTPStatus.OK, HEROES_BY_ATTRIBUTE)
+            elif attribute in HEROES_BY_ATTRIBUTE:
+                self._send_json(HTTPStatus.OK, {attribute: HEROES_BY_ATTRIBUTE[attribute]})
+            else:
+                self._send_json(
+                    HTTPStatus.BAD_REQUEST,
+                    {
+                        "error": "Unknown attribute",
+                        "available_attributes": sorted(HEROES_BY_ATTRIBUTE),
+                    },
+                )
         else:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found"})
 
@@ -53,7 +53,7 @@ class BuildHandler(BaseHTTPRequestHandler):
 
 
 def run(host="127.0.0.1", port=8000):
-    server = ThreadingHTTPServer((host, port), TipHandler)
+    server = ThreadingHTTPServer((host, port), BuildHandler)
     print(f"Dota Hero Builds service is running at http://{host}:{port}")
     server.serve_forever()
 
