@@ -1,7 +1,8 @@
 # Dota Hero Builds
 
-Небольшой Python HTTP-сервис с примером стартового билда для героя Dota 2.
-Подходит для тестирования GitHub PR-триггера в n8n и не требует зависимостей.
+Dependency-free Python HTTP service with static starter builds for 40 Dota 2
+heroes: 10 Strength, 10 Agility, 10 Intelligence, and 10 Universal heroes.
+The project is suitable for testing an n8n GitHub PR workflow.
 
 ## Run
 
@@ -11,6 +12,14 @@ python app.py
 
 ## Endpoints
 
-- `GET /health` — статус сервиса.
-- `GET /build` — стартовый билд для Axe на оффлейне.
-- `GET /build?hero=crystal-maiden` — билд для Crystal Maiden.
+- `GET /health` — service status.
+- `GET /build` — Axe's offlane starter build.
+- `GET /build?hero=crystal-maiden` — Crystal Maiden's support build.
+- `GET /heroes` — heroes grouped by primary attribute.
+- `GET /heroes?attribute=agility` — the ten Agility heroes.
+
+## Build source
+
+The short item sets are a static demo snapshot informed by the public
+[Dota2ProTracker Pro Builds catalogue](https://dota2protracker.com/builds).
+They are not patch-locked advice: consult current guides before a real match.
