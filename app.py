@@ -3,22 +3,40 @@
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+from urllib.parse import parse_qs, urlparse
 
 
-AXE_BUILD = {
-    "hero": "Axe",
-    "role": "Offlane",
-    "items": ["Phase Boots", "Blink Dagger", "Blade Mail", "Black King Bar"],
-    "skills": ["Berserker's Call", "Battle Hunger", "Counter Helix", "Culling Blade"],
+BUILDS = {
+    "axe": {
+        "hero": "Axe",
+        "role": "Offlane",
+        "items": ["Phase Boots", "Blink Dagger", "Blade Mail", "Black King Bar"],
+        "skills": ["Berserker's Call", "Battle Hunger", "Counter Helix", "Culling Blade"],
+    },
+    "crystal-maiden": {
+        "hero": "Crystal Maiden",
+        "role": "Support",
+        "items": ["Arcane Boots", "Glimmer Cape", "Force Staff", "Black King Bar"],
+        "skills": ["Crystal Nova", "Frostbite", "Arcane Aura", "Freezing Field"],
+    },
 }
 
 
 class BuildHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802 - required by BaseHTTPRequestHandler
-        if self.path == "/health":
+        request = urlparse(self.path)
+        if request.path == "/health":
             self._send_json(HTTPStatus.OK, {"status": "ok"})
-        elif self.path == "/build":
-            self._send_json(HTTPStatus.OK, AXE_BUILD)
+        elif request.path == "/build":
+            hero = parse_qs(request.query).get("hero", ["axe"])[0].lower()
+            build = BUILDS.get(hero)
+            if build:
+                self._send_json(HTTPStatus.OK, build)
+            else:
+                self._send_json(
+                    HTTPStatus.NOT_FOUND,
+                    {"error": "Hero build not found", "available_heroes": sorted(BUILDS)},
+                )
         else:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found"})
 
