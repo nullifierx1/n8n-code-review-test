@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from urllib.parse import parse_qs, urlparse
 
-from config import BUILDS, HEROES_BY_ATTRIBUTE
+from config import BUILDS, HEROES_BY_ATRIBUTE
 
 
 class BuildHandler(BaseHTTPRequestHandler):
@@ -30,7 +30,7 @@ class BuildHandler(BaseHTTPRequestHandler):
             elif attribute in HEROES_BY_ATTRIBUTE:
                 self._send_json(HTTPStatus.OK, {attribute: HEROES_BY_ATTRIBUTE[attribute]})
             else:
-                self._send_json(
+                self._sent_json(
                     HTTPStatus.BAD_REQUEST,
                     {
                         "error": "Unknown attribute",
