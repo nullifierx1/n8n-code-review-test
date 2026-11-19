@@ -1,24 +1,24 @@
-"""A tiny HTTP service that returns a random focus tip."""
+"""A small HTTP service with a starter build for the Dota 2 hero Axe."""
 
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
-import random
 
 
-TIPS = [
-    "Start with the smallest useful step.",
-    "Turn off one distraction for the next 25 minutes.",
-    "Write down the next action before taking a break.",
-]
+AXE_BUILD = {
+    "hero": "Axe",
+    "role": "Offlane",
+    "items": ["Phase Boots", "Blink Dagger", "Blade Mail", "Black King Bar"],
+    "skills": ["Berserker's Call", "Battle Hunger", "Counter Helix", "Culling Blade"],
+}
 
 
-class TipHandler(BaseHTTPRequestHandler):
+class BuildHandler(BaseHTTPRequestHandler):
     def do_GET(self):  # noqa: N802 - required by BaseHTTPRequestHandler
         if self.path == "/health":
             self._send_json(HTTPStatus.OK, {"status": "ok"})
-        elif self.path == "/tip":
-            self._send_json(HTTPStatus.OK, {"tip": random.choice(TIPS)})
+        elif self.path == "/build":
+            self._send_json(HTTPStatus.OK, AXE_BUILD)
         else:
             self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found"})
 
@@ -36,7 +36,7 @@ class TipHandler(BaseHTTPRequestHandler):
 
 def run(host="127.0.0.1", port=8000):
     server = ThreadingHTTPServer((host, port), TipHandler)
-    print(f"Focus Tips service is running at http://{host}:{port}")
+    print(f"Dota Hero Builds service is running at http://{host}:{port}")
     server.serve_forever()
 
 

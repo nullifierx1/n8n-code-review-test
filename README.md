@@ -1,6 +1,7 @@
-# Focus Tips service
+# Dota Hero Builds
 
-Small dependency-free Python HTTP service for testing an n8n GitHub PR flow.
+Небольшой Python HTTP-сервис с примером стартового билда для героя Dota 2.
+Подходит для тестирования GitHub PR-триггера в n8n и не требует зависимостей.
 
 ## Run
 
@@ -10,5 +11,5 @@ python app.py
 
 ## Endpoints
 
-- `GET /health` — service health status.
-- `GET /tip` — a random focus tip.
+- `GET /health` — статус сервиса.
+- `GET /build` — стартовый билд для Axe на оффлейне.
