@@ -1,6 +1,5 @@
 """A small HTTP service with a starter build for the Dota 2 hero Axe."""
 
-from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from urllib.parse import parse_qs, urlparse
@@ -19,7 +18,7 @@ BUILDS = {
         "items": ["Arcane Boots", "Glimmer Cape", "Force Staff", "Black King Bar"],
         "skills": ["Crystal Nova", "Frostbite", "Arcane Aura", "Freezing Field"],
     },
-}
+},
 
 
 class BuildHandler(BaseHTTPRequestHandler):
@@ -56,7 +55,3 @@ def run(host="127.0.0.1", port=8000):
     server = ThreadingHTTPServer((host, port), TipHandler)
     print(f"Dota Hero Builds service is running at http://{host}:{port}")
     server.serve_forever()
-
-
-if __name__ == "__main__":
-    run()
